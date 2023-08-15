@@ -38,7 +38,7 @@ class UserController extends Controller
             'ok' => true,
             'message' => "User has been created!",
             'data' => $user
-        ], 400);
+        ], 201);
     }
 
     public function index(){
