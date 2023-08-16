@@ -14,6 +14,7 @@ class BookController extends Controller
             $books = Book::all();
             $books->each(function ($book) {
                 $book->author;
+                $book->genres;
             });
             return $books;
         });
@@ -39,6 +40,7 @@ class BookController extends Controller
             $books = book::limit($inputs['numOfData'])->offset(($page - 1) * $inputs['numOfData'])->get();
             $books->each(function($book){
                 $book->author;
+                $book->genres;
             });
             return $books;
         });
@@ -53,12 +55,18 @@ class BookController extends Controller
             "title" => "required|max:255|string",
             "description" => "required|max:2000|string",
             "author_id" => "required|exists:authors,id",
+            "genre_id" => 'sometimes|array',
+            'genre_id.*' => 'sometimes|exists:genres,id|integer'
         ]);
         if($validator->fails()){
             return $this->responseBadRequest($validator);
         }
 
-        $book = Book::create($validator->validated());
+        $book = Book::create($validator->safe()->only("title", "description", "author_id"));
+        if(isset($validator->validated()["genre_id"])){
+            $book->genres()->sync($validator->validated()["genre_id"]);
+        }
+        $book->genres;
         $book->author;
         Cache::forget("books");
         return $this->responseCreated($book, "Book has been created!");
@@ -69,13 +77,17 @@ class BookController extends Controller
             "title" => "sometimes|max:255|string",
             "description" => "sometimes|max:2000|string",
             "author_id" => "sometimes|exists:authors,id",
+            "genre_id" => 'sometimes|array',
+            'genre_id.*' => 'sometimes|exists:genres,id|integer'
         ]);
 
         if($validator->fails()){
             return $this->responseBadRequest($validator);
         }
 
-        $book->update($validator->validated());
+        $book->update($validator->safe()->except("genre_id"));
+        $book->genres()->sync($validator->validated()["genre_id"] ?? []);
+        $book->genres;
         $book->author;
         Cache::forget("books");
         return $this->responseOk($book, "Book has been updated!");

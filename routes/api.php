@@ -27,3 +27,12 @@ Route::prefix('books')->group(function () {
     Route::patch('/{book}', [App\Http\Controllers\BookController::class, 'update']);
     Route::delete('/{book}', [App\Http\Controllers\BookController::class, 'destroy']);
 });
+
+Route::prefix('genres')->group(function () {
+    Route::post('/', [App\Http\Controllers\GenreController::class, 'store']);
+    Route::get('/', [App\Http\Controllers\GenreController::class, 'index']);
+    Route::get('/paginate/{page}', [App\Http\Controllers\GenreController::class, 'paginate']);
+    Route::patch('{genre}', [App\Http\Controllers\GenreController::class, 'update']);
+    Route::delete('{genre}', [App\Http\Controllers\GenreController::class, 'destroy']);
+    
+});

@@ -4,19 +4,61 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Author;
+use App\Models\Book;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        $authors = [
+            [
+                "firstname" => "Steve",
+                "lastname" => "Jobs",
+                "penname" => "S. Jobs"
+            ],
+            [
+                "firstname" => "Bill",
+                "lastname" => "Gates"
+            ]
+        ];
+        $books = [
+            [
+                [
+                    'title' => 'How to use Apple Products',
+                    'description' => "No don't use it"
+                ],
+                [
+                    'title' => "Why is apple expensive?",
+                    'description' => "IDK"
+                ],
+                [
+                    'title' => 'Are you rich?',
+                    'description' => "ofcourse not"
+                ]
+            ],
+            [
+                [
+                    'title' => 'How to use Microsoft Products',
+                    'description' => "No don't use it"
+                ],
+                [
+                    'title' => "Why is Microsoft expensive?",
+                    'description' => "IDK"
+                ],
+                [
+                    'title' => 'Are you poor?',
+                    'description' => "ofcourse not"
+                ]
+            ]
+        ];
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        foreach($authors as $index => $author){
+            $author = Author::create($author);
+            foreach($books[$index] as $book){
+                $author->books()->create($book);
+            }
+        }
+
     }
 }
