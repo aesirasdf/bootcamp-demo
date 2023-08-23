@@ -26,29 +26,35 @@ class DatabaseSeeder extends Seeder
             [
                 [
                     'title' => 'How to use Apple Products',
-                    'description' => "No don't use it"
+                    'description' => "No don't use it",
+                    'price' => 100
                 ],
                 [
                     'title' => "Why is apple expensive?",
-                    'description' => "IDK"
+                    'description' => "IDK",
+                    'price' => 200
                 ],
                 [
                     'title' => 'Are you rich?',
-                    'description' => "ofcourse not"
+                    'description' => "ofcourse not",
+                    'price' => 300
                 ]
             ],
             [
                 [
                     'title' => 'How to use Microsoft Products',
-                    'description' => "No don't use it"
+                    'description' => "No don't use it",
+                    'price' => 100
                 ],
                 [
                     'title' => "Why is Microsoft expensive?",
-                    'description' => "IDK"
+                    'description' => "IDK",
+                    'price' => 200
                 ],
                 [
                     'title' => 'Are you poor?',
-                    'description' => "ofcourse not"
+                    'description' => "ofcourse not",
+                    'price' => 300
                 ]
             ]
         ];

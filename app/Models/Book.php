@@ -28,4 +28,9 @@ class Book extends Model
         // return $this->belongsToMany(Genre::class, "book_genre", "book_id", "genre_id")->withPivot("column1", "column2");
 
     }
+
+    
+    public function loans() {
+        return $this->belongsToMany(Loan::class)->withPivot("price");
+    }
 }

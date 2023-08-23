@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('books', function (Blueprint $table) {
+        Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->string("title");
-            $table->text("description");
-            $table->unsignedBigInteger("author_id");
-            $table->decimal("price", 8, 2); // 30 days
+            $table->string('firstname', 64);
+            $table->string('middlename', 64)->nullable();
+            $table->string('lastname', 64);
+            $table->tinyInteger('gender'); // 0 = FEMALE | 1 = MALE | 2 = NON-BINARY | 3 = HELICOPTER
+            $table->date("birthdate");
             $table->timestamps();
-
-            $table->foreign("author_id")->references("id")->on("authors");
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('books');
+        Schema::dropIfExists('customers');
     }
 };

@@ -15,6 +15,7 @@ class BookController extends Controller
             $books->each(function ($book) {
                 $book->author;
                 $book->genres;
+                $book->loans;
             });
             return $books;
         });
@@ -56,7 +57,8 @@ class BookController extends Controller
             "description" => "required|max:2000|string",
             "author_id" => "required|exists:authors,id",
             "genre_id" => 'sometimes|array',
-            'genre_id.*' => 'sometimes|exists:genres,id|integer'
+            'genre_id.*' => 'sometimes|exists:genres,id|integer',
+            'price' => 'required|numeric|min:1|max:1000000'
         ]);
         if($validator->fails()){
             return $this->responseBadRequest($validator);
@@ -78,7 +80,8 @@ class BookController extends Controller
             "description" => "sometimes|max:2000|string",
             "author_id" => "sometimes|exists:authors,id",
             "genre_id" => 'sometimes|array',
-            'genre_id.*' => 'sometimes|exists:genres,id|integer'
+            'genre_id.*' => 'sometimes|exists:genres,id|integer',
+            'price' => 'sometimes|numeric|min:1|max:1000000'
         ]);
 
         if($validator->fails()){
