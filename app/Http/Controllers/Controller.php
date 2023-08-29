@@ -27,4 +27,8 @@ class Controller extends BaseController
         return response()->json(['ok' => false, 'message' => $message], 404);
     }
 
+    protected function responseUnauthorized($message = "Unauthorized!"){
+        return response()->json(['ok' => false, 'message' => $message], 401);
+    }
+
 }
