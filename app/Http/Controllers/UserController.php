@@ -9,6 +9,9 @@ use App\Models\User;
 class UserController extends Controller
 {
     public function store(Request $request){
+        if(!$request->user()->can("create accounts") /* return true or false */){
+            return $this->responseForbidden("create accounts", "You need to have create accounts permission to proceed!");
+        }
         $validator = Validator::make($request->all(), [
             "name" => ["required", "min:4", "alpha_num", "max:32", "unique:users"],
             "email" => "required|email|max:64|unique:users",
@@ -41,7 +44,10 @@ class UserController extends Controller
         ], 201);
     }
 
-    public function index(){
+    public function index(Request $request){
+        if(!$request->user()->can("view accounts") /* return true or false */){
+            return $this->responseForbidden("view accounts", "You need to have view accounts permission to proceed!");
+        }
         return response()->json([
             'ok' => true, 
             'data' => User::all(), 
@@ -50,6 +56,9 @@ class UserController extends Controller
     }
 
     public function update(Request $request, User $user){
+        if(!$request->user()->can("update accounts") /* return true or false */){
+            return $this->responseForbidden("update accounts", "You need to have update accounts permission to proceed!");
+        }
         $validator = Validator::make($request->all(), [
             "name" => ["sometimes", "min:4", "alpha_num", "max:32", "unique:users,name," . $user->id],
             "email" => "sometimes|email|max:64|unique:users,email," . $user->id,
@@ -82,7 +91,10 @@ class UserController extends Controller
         ]);
     }
 
-    public function destroy(User $user){
+    public function destroy(Request $request, User $user){
+        if(!$request->user()->can("delete accounts") /* return true or false */){
+            return $this->responseForbidden("delete accounts", "You need to have delete accounts permission to proceed!");
+        }
         $user->delete();
         return response()->json([
             'ok' => true,

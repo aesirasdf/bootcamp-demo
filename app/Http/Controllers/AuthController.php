@@ -34,6 +34,9 @@ class AuthController extends Controller
         }
         else{
             //if fails
+            $validated = $validator->validated();
+            unset($validated["password"]); // prevent password from being logged
+            $this->log($request, "login failed", $validated);
             return $this->responseUnauthorized();
         }
     }
@@ -70,5 +73,12 @@ class AuthController extends Controller
         }
 
         return $this->responseUnauthorized();
+    }
+
+    public function getInfo(Request $request){
+        $user = $request->user();
+        $user->profile;
+        $user->roles;
+        return $this->responseOk($user, "User info has been retrieved!");
     }
 }

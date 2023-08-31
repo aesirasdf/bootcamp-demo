@@ -52,6 +52,9 @@ class BookController extends Controller
     }
 
     public function store(Request $request){
+        if(!$request->user()->can("create books") /* return true or false */){
+            return $this->responseForbidden("create books", "You need to have create books permission to proceed!");
+        }
         $validator = Validator::make($request->all(), [
             "title" => "required|max:255|string",
             "description" => "required|max:2000|string",
@@ -64,7 +67,7 @@ class BookController extends Controller
             return $this->responseBadRequest($validator);
         }
 
-        $book = Book::create($validator->safe()->only("title", "description", "author_id"));
+        $book = Book::create($validator->safe()->only("title", "description", "author_id", "price"));
         if(isset($validator->validated()["genre_id"])){
             $book->genres()->sync($validator->validated()["genre_id"]);
         }
@@ -75,6 +78,9 @@ class BookController extends Controller
     }
 
     public function update(Request $request, Book $book){
+        if(!$request->user()->can("update books") /* return true or false */){
+            return $this->responseForbidden("update books", "You need to have update books permission to proceed!");
+        }
         $validator = Validator::make($request->all(), [
             "title" => "sometimes|max:255|string",
             "description" => "sometimes|max:2000|string",
@@ -96,7 +102,10 @@ class BookController extends Controller
         return $this->responseOk($book, "Book has been updated!");
     }
 
-    public function destroy(Book $book){
+    public function destroy(Request $request, Book $book){
+        if(!$request->user()->can("delete books") /* return true or false */){
+            return $this->responseForbidden("delete books", "You need to have delete books permission to proceed!");
+        }
         $book->delete();
         Cache::forget("books");
         return $this->responseOk(null, "Book has been deleted!");

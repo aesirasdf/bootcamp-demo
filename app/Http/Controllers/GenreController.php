@@ -11,6 +11,9 @@ class GenreController extends Controller
 {
     
     public function store(Request $request){
+        if(!$request->user()->can("create genres") /* return true or false */){
+            return $this->responseForbidden("create genres", "You need to have create genres permission to proceed!");
+        }
         $validator = Validator::make($request->all(), [
             'name' => "required|max:64|unique:genres",
             'description' => "sometimes|max:64|string",
@@ -72,6 +75,9 @@ class GenreController extends Controller
     
 
     public function update(Request $request, Genre $genre){
+        if(!$request->user()->can("update genres") /* return true or false */){
+            return $this->responseForbidden("update genres", "You need to have update genres permission to proceed!");
+        }
         $validator = Validator::make($request->all(), [
             'name' => "required|max:64|unique:genres,id," . $genre->id,
             'description' => "sometimes|max:64|string",
@@ -91,7 +97,10 @@ class GenreController extends Controller
         return $this->responseOk($genre, "Genre has been updated!");
     }
 
-    public function destroy(Genre $genre){
+    public function destroy(Request $request, Genre $genre){
+        if(!$request->user()->can("delete genres") /* return true or false */){
+            return $this->responseForbidden("delete genres", "You need to have delete genres permission to proceed!");
+        }
         $genre->delete();
         Cache::forget("genres");
         return $this->responseOk(null, "Genre has been deleted!");

@@ -12,6 +12,9 @@ class CustomerController extends Controller
     //
     
     public function store(Request $request){
+        if(!$request->user()->can("create customers") /* return true or false */){
+            return $this->responseForbidden("create customers", "You need to have create customers permission to proceed!");
+        }
         $validator = Validator::make($request->all(), [
             'firstname' => "required|max:64|regex:/^[a-z ,.'-]+$/i",
             'middlename' => "sometimes|max:64|regex:/^[a-z ,.'-]+$/i",
@@ -30,7 +33,10 @@ class CustomerController extends Controller
         
     }
 
-    public function index(){
+    public function index(Request $request){
+        if(!$request->user()->can("view customers") /* return true or false */){
+            return $this->responseForbidden("view customers", "You need to have view customers permission to proceed!");
+        }
         $customers = Cache::remember('customers', now()->addHours(1), function () {
             $customers = Customer::all();
             $customers->each(function($customer){
@@ -47,6 +53,9 @@ class CustomerController extends Controller
     }
 
     public function paginate(Request $request, int $page = 1){
+        if(!$request->user()->can("view customers") /* return true or false */){
+            return $this->responseForbidden("view customers", "You need to have view customers permission to proceed!");
+        }
         $inputs = [
             "page" => $page,
             "numOfData" => $request->get("numOfData") ?? 25,
@@ -76,6 +85,9 @@ class CustomerController extends Controller
     }
 
     public function update(Request $request, Customer $customer){
+        if(!$request->user()->can("update customers") /* return true or false */){
+            return $this->responseForbidden("update customers", "You need to have update customers permission to proceed!");
+        }
         $validator = Validator($request->all(), [
             'firstname' => "sometimes|max:64|regex:/^[a-z ,.'-]+$/i",
             'middlename' => "sometimes|max:64|regex:/^[a-z ,.'-]+$/i",
@@ -92,7 +104,10 @@ class CustomerController extends Controller
         return $this->responseOk($customer, "Customer has been updated!");
     }
 
-    public function destroy(Customer $customer){
+    public function destroy(Request $request, Customer $customer){
+        if(!$request->user()->can("delete customers") /* return true or false */){
+            return $this->responseForbidden("delete customers", "You need to have delete customers permission to proceed!");
+        }
         $customer->books()->delete();
         $customer->delete();
         Cache::forget("customers");

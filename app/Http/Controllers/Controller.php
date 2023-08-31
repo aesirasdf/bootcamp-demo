@@ -6,6 +6,8 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use App\Models\ActivityLog;
 
 class Controller extends BaseController
 {
@@ -29,6 +31,22 @@ class Controller extends BaseController
 
     protected function responseUnauthorized($message = "Unauthorized!"){
         return response()->json(['ok' => false, 'message' => $message], 401);
+    }
+
+    protected function responseForbidden($permission, $message = "Forbidden!"){
+        return response()->json(['ok' => false, 'message' => $message, 'permission' => $permission], 403);
+    }
+
+    protected function log(Request $request, $description, $properties, $table_name = null, $model = null){
+        ActivityLog::create([
+            "table_name" => $table_name,
+            "model_id" => $model ? $model->id : null,
+            "description" => $description,
+            "user_id" => $request->user() ? $request->user()->id : null,
+            "properties" => json_encode($properties),
+            "ip" => $request->ip(),
+            "user_agent" => $request->userAgent()
+        ]);
     }
 
 }

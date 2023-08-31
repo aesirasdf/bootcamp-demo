@@ -14,6 +14,9 @@ class LoanController extends Controller
     //
 
     public function store(Request $request){
+        if(!$request->user()->can("create loans") /* return true or false */){
+            return $this->responseForbidden("create loans", "You need to have create loans permission to proceed!");
+        }
         $validator = Validator::make($request->all(), [
             'customer_id' => 'exists:customers,id|required',
             'months' => 'min:1|integer|required|max:12',
@@ -52,7 +55,10 @@ class LoanController extends Controller
     }
 
     
-    public function index(){
+    public function index(Request $request){
+        if(!$request->user()->can("view loans") /* return true or false */){
+            return $this->responseForbidden("view loans", "You need to have view loans permission to proceed!");
+        }
         $loans = Cache::remember('loans', now()->addDays(1), function(){
             $loans = Loan::all();
             $loans->each(function ($loan) {
@@ -67,6 +73,9 @@ class LoanController extends Controller
     }
 
     public function update(Request $request, Loan $loan){
+        if(!$request->user()->can("update loans") /* return true or false */){
+            return $this->responseForbidden("update loans", "You need to have update loans permission to proceed!");
+        }
         $validator = Validator::make($request->all(), [
             'customer_id' => 'exists:customers,id|sometimes',
             'months' => 'min:1|integer|sometimes|max:12',
@@ -106,14 +115,20 @@ class LoanController extends Controller
         return $this->responseOk($loan, "Loan has been updated!");
     }
 
-    public function destroy(Loan $loan){
+    public function destroy(Request $request, Loan $loan){
+        if(!$request->user()->can("delete loans") /* return true or false */){
+            return $this->responseForbidden("delete loans", "You need to have delete loans permission to proceed!");
+        }
         // $loan->books()->delete();
         $loan->delete();
         Cache::forget("loans");
         return $this->responseOk([], "Loan has been deleted!");
     }
 
-    public function view(Loan $loan){
+    public function view(Request $request, Loan $loan){
+        if(!$request->user()->can("view loans") /* return true or false */){
+            return $this->responseForbidden("view loans", "You need to have view loans permission to proceed!");
+        }
         $loan->books;
         $loan->customer;
         $loan->profile;

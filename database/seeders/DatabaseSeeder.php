@@ -6,11 +6,37 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Author;
 use App\Models\Book;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->createPermission();
+    }
+
+
+    private function createPermissions(){
+        
+        $permissions = [
+            'view accounts', 'create accounts', 'update accounts', 'delete accounts',
+            'view books', 'create books', 'update books', 'delete books',
+            'view loans', 'create loans', 'update loans', 'delete loans',
+            'view authors', 'create authors', 'update authors', 'delete authors',
+            'view genres', 'create genres', 'update genres', 'delete genres',
+            'view customers', 'create customers', 'update customers', 'delete customers',
+        ];
+
+        foreach($permissions as $permission){
+            Permission::create([
+                'name' => $permission,
+                'guard_name' => 'api'
+            ]);
+        }
+    }
+
+    private function createBooks(){
         $authors = [
             [
                 "firstname" => "Steve",
@@ -65,6 +91,5 @@ class DatabaseSeeder extends Seeder
                 $author->books()->create($book);
             }
         }
-
     }
 }

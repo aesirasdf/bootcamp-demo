@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', [App\Http\Controllers\AuthController::class, 'login']);
 // http://localhost:8000/api/register
 Route::post('register', [App\Http\Controllers\AuthController::class, 'register']);
+// http://localhost:8000/api/getInfo
+Route::middleware(['auth:api'])->get('info', [App\Http\Controllers\AuthController::class, 'getInfo']);
 
 Route::prefix("users")->middleware(['auth:api'])->group(function () {
     // http://localhost:8000/api/users
@@ -53,9 +55,9 @@ Route::prefix('genres')->group(function () {
 
 
 Route::prefix('customers')->group(function () {
-    Route::get('/', [App\Http\Controllers\CustomerController::class, 'index']);
-    Route::get('/paginate/{page}', [App\Http\Controllers\CustomerController::class, 'paginate']);
     Route::middleware(['auth:api'])->group(function () {
+        Route::get('/', [App\Http\Controllers\CustomerController::class, 'index']);
+        Route::get('/paginate/{page}', [App\Http\Controllers\CustomerController::class, 'paginate']);
         Route::post('/', [App\Http\Controllers\CustomerController::class, 'store']);
         Route::patch('{customer}', [App\Http\Controllers\CustomerController::class, 'update']);
         Route::delete('{customer}', [App\Http\Controllers\CustomerController::class, 'destroy']);
